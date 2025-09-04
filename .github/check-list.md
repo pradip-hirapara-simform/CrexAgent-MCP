@@ -28,7 +28,7 @@ This checklist follows the steps in `shadcn-setup.md` to ensure your project is 
   - [ ] `lint-staged` config added to `package.json`
 
 - [ ] **shadcn/ui CLI**
-  - [ ] shadcn/ui CLI initialized (`pnpm dlx shadcn-ui@latest init`)
+  - [ ] shadcn/ui CLI initialized (`pnpm dlx shadcn@latest init`)
   - [ ] CLI configured for React, Tailwind, and correct paths
 
 - [ ] **Component Utilities**
@@ -75,4 +75,6 @@ For detailed steps, see `.github/shadcn-setup.md`.
 
 ---
 
-Check off each item as you complete your setup!
+## Check off each item as you complete your setup!
+
+Once all steps are completed, verify your setup by reviewing the checklist in this file and comparing it with the detailed instructions in [shadcn-setup.md](./shadcn-setup.md). Ensure all configurations and components are correctly implemented.

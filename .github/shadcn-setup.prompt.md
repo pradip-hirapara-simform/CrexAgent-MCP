@@ -34,7 +34,7 @@ pnpm install
 
 **📖 Reference:** [Vite Getting Started Guide](https://vitejs.dev/guide/)
 
-> **Important:** **remove all existing content or code** from the `src/index.css` file to avoid conflicts.
+> **Important:** Before proceeding, ensure that the `src/index.css` file is **completely cleared** of any existing content or code. This step is crucial to prevent conflicts with Tailwind CSS and shadcn/ui configurations. Always verify that the file is empty before adding the Tailwind CSS.
 
 ---
 
@@ -50,10 +50,114 @@ pnpm add tailwindcss @tailwindcss/vite
 
 ### Configure Tailwind CSS v4
 
+ensure that the `src/index.css` file is **completely cleared** of any existing content or code.
 Update `src/index.css` to import Tailwind CSS v4 with custom theme variables:
 
 ```css
-@import 'tailwindcss';
+@import "tailwindcss";
+```
+
+**📖 Reference:** [Tailwind CSS v4 Documentation](https://ui.shadcn.com/docs/installation/vite)
+
+---
+
+### Configure Component Utilities
+
+Create `src/lib/utils.ts` for className utilities:
+
+```typescript
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+```
+
+Install required dependencies for the utility function:
+
+```bash
+pnpm add clsx tailwind-merge
+pnpm add -D @types/node
+```
+
+Update `tsconfig.app.json` to include path aliases:
+
+```json
+{
+  "compilerOptions": {
+    // ... existing options
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+```
+
+Update `vite.config.ts` to support path aliases:
+
+```typescript
+import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
+});
+```
+
+---
+
+## 6. Install shadcn/ui CLI
+
+Install the shadcn/ui CLI tool to manage components:
+
+```bash
+# Install shadcn/ui CLI globally or use via pnpm dlx
+pnpm dlx shadcn@latest init
+```
+
+### What is shadcn/ui CLI?
+
+The shadcn/ui CLI is a powerful tool that:
+
+- **Generates component boilerplate** with proper TypeScript types
+- **Manages component dependencies** automatically
+- **Maintains consistency** across your component library
+- **Provides easy updates** for individual components
+- **Creates accessible components** following ARIA best practices
+
+The CLI will prompt you with configuration questions:
+
+- **Framework:** React
+- **Styling:** Tailwind CSS
+- **Components location:** `src/components`
+- **Utils location:** `src/lib/utils`
+- **CSS file location:** `src/index.css`
+
+**📖 Reference:** [shadcn/ui CLI Documentation](https://ui.shadcn.com/docs/cli)
+
+---
+
+## 7. Setup shadcn/ui with Tailwind v4
+
+### Key Differences with Tailwind v4
+
+**❌ No `tailwind.config.js` file needed**  
+In Tailwind CSS v4, configuration is done directly in your CSS files using the `@theme` directive.
+
+**✅ Theme customization via CSS**  
+Instead of a config file, extend your theme in `src/index.css`:
+
+```css
+@import "tailwindcss";
 
 @theme {
   /* Your custom theme variables */
@@ -76,8 +180,6 @@ Update `src/index.css` to import Tailwind CSS v4 with custom theme variables:
   }
 }
 ```
-
-**📖 Reference:** [Tailwind CSS v4 Documentation](https://tailwindcss.com/docs/v4-beta)
 
 ---
 
@@ -140,7 +242,7 @@ Install Husky and lint-staged for Git hooks:
 pnpm add -D husky lint-staged
 
 # Initialize Husky
-npx husky init
+pnpm dlx husky init
 ```
 
 ### Configure Pre-commit Hook
@@ -151,7 +253,7 @@ Update `.husky/pre-commit`:
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npx lint-staged
+pnpm dlx lint-staged
 ```
 
 ### Add lint-staged Configuration
@@ -184,139 +286,19 @@ Add to `package.json`:
 
 ---
 
-## 6. Install shadcn/ui CLI
-
-Install the shadcn/ui CLI tool to manage components:
-
-```bash
-# Install shadcn/ui CLI globally or use via pnpm dlx
-pnpm dlx shadcn-ui@latest init
-```
-
-### What is shadcn/ui CLI?
-
-The shadcn/ui CLI is a powerful tool that:
-
-- **Generates component boilerplate** with proper TypeScript types
-- **Manages component dependencies** automatically
-- **Maintains consistency** across your component library
-- **Provides easy updates** for individual components
-- **Creates accessible components** following ARIA best practices
-
-The CLI will prompt you with configuration questions:
-
-- **Framework:** React
-- **Styling:** Tailwind CSS
-- **Components location:** `src/components`
-- **Utils location:** `src/lib/utils`
-- **CSS file location:** `src/index.css`
-
-**📖 Reference:** [shadcn/ui CLI Documentation](https://ui.shadcn.com/docs/cli)
-
----
-
-## 7. Setup shadcn/ui with Tailwind v4
-
-### Key Differences with Tailwind v4
-
-**❌ No `tailwind.config.js` file needed**  
-In Tailwind CSS v4, configuration is done directly in your CSS files using the `@theme` directive.
-
-**✅ Theme customization via CSS**  
-Instead of a config file, extend your theme in `src/index.css`:
-
-```css
-@import 'tailwindcss';
-
-@theme {
-  /* Your custom theme variables */
-  --color-primary: var(--clr-primary);
-  /* ... other variables */
-}
-:root {
-  --clr-primary: #4f46e5;
-}
-.dark {
-  --clr-primary: #6366f1;
-}
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-```
-
-### Configure Component Utilities
-
-Create `src/lib/utils.ts` for className utilities:
-
-```typescript
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-```
-
-Install required dependencies for the utility function:
-
-```bash
-pnpm add clsx tailwind-merge
-pnpm add -D @types/node
-```
-
-Update `tsconfig.app.json` to include path aliases:
-
-```json
-{
-  "compilerOptions": {
-    // ... existing options
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
-}
-```
-
-Update `vite.config.ts` to support path aliases:
-
-```typescript
-import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
-import path from 'path';
-import { defineConfig } from 'vite';
-
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
-});
-```
-
----
-
 ## 8. Add Components
 
 Now you can add shadcn/ui components using the CLI:
 
 ```bash
 # Add a button component
-pnpm dlx shadcn-ui@latest add button
+pnpm dlx shadcn@latest add button
 
 # Add multiple components at once
-pnpm dlx shadcn-ui@latest add card dialog input label
+pnpm dlx shadcn@latest add card dialog input label
 
 # Add all available components (not recommended for production)
-pnpm dlx shadcn-ui@latest add --all
+pnpm dlx shadcn@latest add --all
 ```
 
 ### Component Structure
@@ -339,7 +321,7 @@ src/
 ### Example Button Usage
 
 ```tsx
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 
 export function ButtonDemo() {
   return (
@@ -366,7 +348,7 @@ export function ButtonDemo() {
 Update `src/index.css` with proper dark mode support:
 
 ```css
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @theme {
   /* Your custom theme variables */
@@ -395,9 +377,9 @@ Update `src/index.css` with proper dark mode support:
 Create a theme provider component `src/components/theme-provider.tsx`:
 
 ```tsx
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = 'dark' | 'light' | 'system';
+type Theme = "dark" | "light" | "system";
 
 type ThemeProviderProps = {
   children: React.ReactNode;
@@ -411,7 +393,7 @@ type ThemeProviderState = {
 };
 
 const initialState: ThemeProviderState = {
-  theme: 'system',
+  theme: "system",
   setTheme: () => null,
 };
 
@@ -419,23 +401,24 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
 export function ThemeProvider({
   children,
-  defaultTheme = 'system',
-  storageKey = 'vite-ui-theme',
+  defaultTheme = "system",
+  storageKey = "vite-ui-theme",
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme,
+    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
   );
 
   useEffect(() => {
     const root = window.document.documentElement;
 
-    root.classList.remove('light', 'dark');
+    root.classList.remove("light", "dark");
 
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light';
+    if (theme === "system") {
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+        .matches
+        ? "dark"
+        : "light";
 
       root.classList.add(systemTheme);
       return;
@@ -462,7 +445,8 @@ export function ThemeProvider({
 export const useTheme = () => {
   const context = useContext(ThemeProviderContext);
 
-  if (context === undefined) throw new Error('useTheme must be used within a ThemeProvider');
+  if (context === undefined)
+    throw new Error("useTheme must be used within a ThemeProvider");
 
   return context;
 };
@@ -477,16 +461,25 @@ export const useTheme = () => {
 Update `src/App.tsx`:
 
 ```tsx
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ThemeProvider, useTheme } from '@/components/theme-provider';
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ThemeProvider, useTheme } from "@/components/theme-provider";
 
 function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <Button variant="outline" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-      {theme === 'dark' ? '☀️' : '🌙'}
+    <Button
+      variant="outline"
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+    >
+      {theme === "dark" ? "☀️" : "🌙"}
     </Button>
   );
 }
@@ -503,11 +496,14 @@ function AppContent() {
         <Card>
           <CardHeader>
             <CardTitle>Welcome to shadcn/ui</CardTitle>
-            <CardDescription>Beautiful components built with Tailwind CSS v4</CardDescription>
+            <CardDescription>
+              Beautiful components built with Tailwind CSS v4
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">
-              This is an example of shadcn/ui components working with Tailwind CSS v4.
+              This is an example of shadcn/ui components working with Tailwind
+              CSS v4.
             </p>
             <div className="flex gap-2">
               <Button>Primary</Button>
@@ -535,20 +531,20 @@ export default App;
 Update `src/main.tsx`:
 
 ```tsx
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
-import './index.css';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App.tsx";
+import "./index.css";
 
-const rootElement = document.getElementById('root');
+const rootElement = document.getElementById("root");
 if (!rootElement) {
-  throw new Error('Root element not found');
+  throw new Error("Root element not found");
 }
 
 createRoot(rootElement).render(
   <StrictMode>
     <App />
-  </StrictMode>,
+  </StrictMode>
 );
 ```
 
@@ -659,7 +655,7 @@ pnpm run format:check      # Check if files are formatted
 pnpm run type-check        # TypeScript type checking
 
 # shadcn/ui Components
-pnpm dlx shadcn-ui@latest add <component-name>
+pnpm dlx shadcn@latest add <component-name>
 
 # Build
 pnpm run build            # Build for production
