@@ -2,6 +2,57 @@
 
 This is a **React + TypeScript + Vite** project with **shadcn/ui** and **Tailwind CSS v4**, featuring **Figma design token integration** via MCP server.
 
+## Core UI Development Rules
+
+### Semantic Structure
+
+- Use correct HTML5 elements (header, main, section, article, footer, nav, etc.)
+
+### Accessibility (WCAG 2.1)
+
+- Maintain logical heading hierarchy
+- Provide descriptive alt text for images
+- Use aria-\* attributes and roles where needed
+- Ensure keyboard navigation and visible focus states
+- Maintain sufficient color contrast
+
+### Responsive Design
+
+- Mobile-first approach
+- Use Tailwind responsive utilities (sm:, md:, lg:, etc.)
+- Prefer Flexbox/Grid for layouts
+
+### Styling & Design Tokens
+
+- Use Tailwind classes only; avoid custom CSS unless absolutely necessary
+- Map all colors, spacing, and typography to CSS variables that connect to shadcn/ui semantic tokens (--primary, --muted-foreground, etc.)
+- Always pull tokens from Figma MCP where available — never hardcode values
+
+### Design System Rules
+
+- ⚡ **IMPORTANT**: Always use components from `/components/ui` when possible
+- Prioritize Figma fidelity to match designs exactly
+- Place new UI components inside `/components/ui`
+- Avoid inline styles unless truly necessary
+
+### Code Readability
+
+- Consistent 2-space indentation
+- Well-structured and commented where non-obvious
+- No redundant classes or unused attributes
+
+### Performance & Modern Practices
+
+- Minimize unnecessary DOM nesting
+- Use loading="lazy" for non-critical images
+- Use rel="noopener noreferrer" for external links
+- Prefer semantic HTML over extra wrappers
+
+### Documentation
+
+- Document each component briefly (props, purpose, usage)
+- Ensure alignment with design system conventions
+
 ## Architecture Overview
 
 - **Design System**: shadcn/ui components with Figma-sourced color tokens mapped to semantic CSS variables
@@ -75,3 +126,7 @@ pnpm run format       # Prettier formatting
 - **shadcn/ui Registry**: Components auto-installed with proper TypeScript types
 - **Tailwind CSS v4**: Modern `@theme inline` syntax instead of config files
 - **Theme Context**: Centralized dark/light mode state across all components
+
+## 🎯 Goal
+
+Generate accessible, performant, and Figma-faithful UI code that integrates naturally with shadcn/ui, Tailwind v4, and your design system, while reusing tokens from Figma MCP for colors, spacing, and typography.
